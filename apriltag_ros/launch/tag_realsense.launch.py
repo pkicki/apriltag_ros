@@ -34,14 +34,15 @@ import os
 from ament_index_python.packages import get_package_share_directory
 from launch.substitutions import LaunchConfiguration
 
+default_config = os.path.join(
+    get_package_share_directory("apriltag_ros"), "cfg", "tags_36h11_filter.yaml"
+)
 image_topic_ = LaunchConfiguration("image_topic", default="image_raw")
 camera_name = LaunchConfiguration("camera_name", default="/camera/color")
+config_file = LaunchConfiguration("config_file", default=default_config)
 
 image_topic = [camera_name, "/", image_topic_]
 info_topic = [camera_name, "/camera_info"]
-config = os.path.join(
-    get_package_share_directory("apriltag_ros"), "cfg", "tags_36h11_filter.yaml"
-)
 
 
 def generate_launch_description():
@@ -50,7 +51,7 @@ def generate_launch_description():
         name="apriltag",
         package="apriltag_ros",
         plugin="AprilTagNode",
-        parameters=[config],
+        parameters=[config_file],
         remappings=[("/image", image_topic), ("/camera_info", info_topic)],
     )
 
